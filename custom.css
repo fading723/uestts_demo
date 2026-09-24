@@ -20,6 +20,34 @@
     background: #f5f8fc;
     font-size: 14px;
 }
+.audio-demo {
+    display: flex;
+    flex-direction: column;
+}
+.audio-demo > h2,
+.audio-demo > p,
+.audio-demo > .pair-nav {
+    order: 0;
+}
+/* Keep demo groups in the requested reference-emotion order. */
+.audio-demo > .emotion-pair {
+    order: 1;
+}
+.audio-demo > #sad2happy { order: 2; }
+.audio-demo > #sad2neutral { order: 3; }
+.audio-demo > #sad2sad { order: 4; }
+.audio-demo > #happy2angry { order: 5; }
+.audio-demo > #happy2happy { order: 6; }
+.audio-demo > #happy2neutral { order: 7; }
+.audio-demo > #happy2sad { order: 8; }
+.audio-demo > #angry2angry { order: 9; }
+.audio-demo > #angry2happy { order: 10; }
+.audio-demo > #angry2neutral { order: 11; }
+.audio-demo > #angry2sad { order: 12; }
+.audio-demo > #neutral2angry { order: 13; }
+.audio-demo > #neutral2happy { order: 14; }
+.audio-demo > #neutral2neutral { order: 15; }
+.audio-demo > #neutral2sad { order: 16; }
 .emotion-pair {
     scroll-margin-top: 24px;
     border-top: 1px solid #d5dfe9;
