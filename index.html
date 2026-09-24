@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.88.1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+	<link rel="stylesheet" href="custom.css">
+	<link rel="stylesheet" href="normalize.css">
+
+	<title>UESTTS: UNIFIED EMOTION UNDERSTANDING AND SPEECH SYNTHESIS FOR ZERO-SHOT TEXT-TO-SPEECH</title>
+	<link href="bootstrap.min.css" rel="stylesheet">
+
+	<style>
+    .image-container {
+        display: flex; /* 使用flex布局使内容并排 */
+        justify-content: center; /* 水平居中显示 */
+        align-items: center; /* 垂直居中显示 */
+        margin-bottom: 20px; /* 下边距 */
+    }
+    .image-container img {
+        margin-right: 20px; /* 图片之间的间隔 */
+        width: 600px; /* 图片宽度 */
+    }
+    .image-container img:last-child {
+        margin-right: 0; /* 最后一张图片不需要右边距 */
+    }
+    
+    .experiment-table {
+        min-width: 1800px;
+    }
+    .experiment-table thead th {
+        font-weight: 700;
+        border-bottom: 2px solid #222;
+        vertical-align: middle;
+        text-align: center;
+    }
+    .experiment-table tbody td:nth-child(2),
+    .experiment-table tbody td:nth-child(3) {
+        border: 1px solid #cfd4dc;
+        padding: 10px 12px;
+        line-height: 1.6;
+    }
+    .experiment-table tbody td:nth-child(2) {
+        min-width: 420px;
+        text-align: left;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+    .experiment-table tbody td:nth-child(3) {
+        min-width: 360px;
+        word-break: keep-all;
+        overflow-wrap: normal;
+    }</style>
+
+</head>
+
+
+<body data-new-gr-c-s-check-loaded="14.1091.0" data-gr-ext-installed="">
+
+<div class="container" >
+<header role="banner">
+</header>
+<main role="main">
+<article itemscope itemtype="https://schema.org/BlogPosting">
+
+
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded paper-intro">
+	<div class="text-center">
+	<h2>UESTTS: UNIFIED EMOTION UNDERSTANDING AND SPEECH SYNTHESIS FOR ZERO-SHOT TEXT-TO-SPEECH</h2>
+
+      
+	</div>
+	<p class="paper-abstract"><b>Abstract:</b>
+		Zero-shot text-to-speech (TTS) systems use reference speech to reproduce the voice characteristics of unseen speakers. However, the reference speech also conveys emotion, which may influence the generated prosody when its emotion differs from that implied by the target text. Consequently, the synthesized speech may not adequately reflect the intended textual emotion. To mitigate this issue, we propose UESTTS, a unified framework for text emotion understanding and zero-shot speech synthesis. Within a shared language model, UESTTS combines bidirectional text understanding with prefix-masked speech generation, incorporates global emotion, latent text emotion representations, and reference style through hierarchical conditioning, and modulates generation hidden states using FiLM. Joint optimization of emotion understanding and speech generation allows text-derived emotion information to guide synthesis without a separate cascaded emotion analysis model. Experimental results suggest that UESTTS improves text-consistent emotional expression while retaining competitive speech quality, content accuracy, and speaker similarity.
+	</p>
+	<div class="paper-figure">
+		<a href="output/pdf/model-cropped.pdf" target="_blank" rel="noopener noreferrer"><img src="uestts.png" alt="Overview of UESTTS: condition construction, emotion understanding, and speech synthesis within a shared text-speech language model." width="2400" height="1334" style="max-width: 100%; height: auto;"></a>
+		<p style="text-align: center; margin-top: 8px;">Figure 1: An overview of our proposed UESTTS</p>
+	</div>
+
+	</div>
+<!-- AUDIO DEMO START -->
+<section class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded audio-demo" aria-labelledby="audio-demo-title">
+<h2 id="audio-demo-title" class="text-center">Reference Audio and Target Text Emotion Pairings</h2>
+<p class="text-center">Each pair combines the emotion of the reference audio with the emotion of the target text.</p>
+<nav class="pair-nav" aria-label="Emotion pairs">
+<a href="#angry2angry">Angry2angry</a>
+<a href="#angry2happy">Angry2happy</a>
+<a href="#angry2neutral">Angry2neutral</a>
+<a href="#angry2sad">Angry2sad</a>
+<a href="#happy2angry">Happy2angry</a>
+<a href="#happy2happy">Happy2happy</a>
+<a href="#happy2neutral">Happy2neutral</a>
+<a href="#happy2sad">Happy2sad</a>
+<a href="#neutral2angry">Neutral2angry</a>
+<a href="#neutral2happy">Neutral2happy</a>
+<a href="#neutral2neutral">Neutral2neutral</a>
+<a href="#neutral2sad">Neutral2sad</a>
+<a href="#sad2angry">Sad2angry</a>
+<a href="#sad2happy">Sad2happy</a>
+<a href="#sad2neutral">Sad2neutral</a>
+<a href="#sad2sad">Sad2sad</a>
+</nav>
+<section class="emotion-pair" id="angry2angry" aria-labelledby="title-angry2angry">
+<h3 id="title-angry2angry">Angry2angry</h3>
+<p class="pair-description">Reference Audio Emotion: angry -&gt; Target Text Emotion: angry</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">我真的受够了！一次次忍让换来的不是理解，而是变本加厉的伤害。别再把沉默当成软弱！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2angry, Sample1, reference audio">
+<source src="audio/references/reference_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">请不要再打断我，我的话还没有说完，你既然要求讨论，就至少应该尊重最基本的发言秩序！</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2angry, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_01/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2angry, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_01/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2angry, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_01/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2angry, Sample1, UESTTS">
+<source src="audio/model_04/pair_01/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I have explained this boundary repeatedly, yet they keep crossing it. This time, I will not excuse the damage or stay quiet.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2angry, Sample2, reference audio">
+<source src="audio/references/reference_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">You promised this would be finished today, yet the folder is still empty; stop making excuses and deliver what we agreed on!</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2angry, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_01/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2angry, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_01/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2angry, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_01/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2angry, Sample2, UESTTS">
+<source src="audio/model_04/pair_01/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="angry2happy" aria-labelledby="title-angry2happy">
+<h3 id="title-angry2happy">Angry2happy</h3>
+<p class="pair-description">Reference Audio Emotion: angry -&gt; Target Text Emotion: happy</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">我真的受够了！一次次忍让换来的不是理解，而是变本加厉的伤害。别再把沉默当成软弱！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2happy, Sample1, reference audio">
+<source src="audio/references/reference_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">雨停后天空挂起一道完整的彩虹，孩子们踩着水花追逐，清脆的笑声一路飘过小巷。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2happy, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_02/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2happy, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_02/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2happy, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_02/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2happy, Sample1, UESTTS">
+<source src="audio/model_04/pair_02/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I have explained this boundary repeatedly, yet they keep crossing it. This time, I will not excuse the damage or stay quiet.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2happy, Sample2, reference audio">
+<source src="audio/references/reference_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">When the final shot dropped through the hoop, the whole arena erupted, and my teammates lifted me above the roaring crowd.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2happy, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_02/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2happy, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_02/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2happy, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_02/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2happy, Sample2, UESTTS">
+<source src="audio/model_04/pair_02/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="angry2neutral" aria-labelledby="title-angry2neutral">
+<h3 id="title-angry2neutral">Angry2neutral</h3>
+<p class="pair-description">Reference Audio Emotion: angry -&gt; Target Text Emotion: neutral</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">我真的受够了！一次次忍让换来的不是理解，而是变本加厉的伤害。别再把沉默当成软弱！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample1, reference audio">
+<source src="audio/references/reference_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">上午九点，项目组按计划开始会议，负责人依次说明本周进度、资源安排以及下一阶段的交付时间。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_03/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_03/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_03/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample1, UESTTS">
+<source src="audio/model_04/pair_03/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I have explained this boundary repeatedly, yet they keep crossing it. This time, I will not excuse the damage or stay quiet.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample2, reference audio">
+<source src="audio/references/reference_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">The review meeting begins at ten, and each department will present its quarterly results before the budget discussion starts.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_03/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_03/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_03/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2neutral, Sample2, UESTTS">
+<source src="audio/model_04/pair_03/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="angry2sad" aria-labelledby="title-angry2sad">
+<h3 id="title-angry2sad">Angry2sad</h3>
+<p class="pair-description">Reference Audio Emotion: angry -&gt; Target Text Emotion: sad</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">我真的受够了！一次次忍让换来的不是理解，而是变本加厉的伤害。别再把沉默当成软弱！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2sad, Sample1, reference audio">
+<source src="audio/references/reference_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">毕业典礼结束后，空荡的教室只剩几张纸屑，我擦掉黑板上的留言，迟迟舍不得关灯离开。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2sad, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_04/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2sad, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_04/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2sad, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_04/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2sad, Sample1, UESTTS">
+<source src="audio/model_04/pair_04/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I have explained this boundary repeatedly, yet they keep crossing it. This time, I will not excuse the damage or stay quiet.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="angry2sad, Sample2, reference audio">
+<source src="audio/references/reference_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">I found our old photograph inside a book today; everyone was laughing there, though half those voices are gone now.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="angry2sad, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_04/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="angry2sad, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_04/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="angry2sad, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_04/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="angry2sad, Sample2, UESTTS">
+<source src="audio/model_04/pair_04/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="happy2angry" aria-labelledby="title-happy2angry">
+<h3 id="title-happy2angry">Happy2angry</h3>
+<p class="pair-description">Reference Audio Emotion: happy -&gt; Target Text Emotion: angry</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">太好啦！我终于拿到录取通知书了，这段时间的努力全都值得，今晚一定要好好庆祝一下！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2angry, Sample1, reference audio">
+<source src="audio/references/reference_03.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">我反复强调不要擅自修改数据，你竟然一句招呼都不打就全部覆盖，立刻给我恢复原始版本！</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2angry, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_05/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2angry, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_05/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2angry, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_05/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2angry, Sample1, UESTTS">
+<source src="audio/model_04/pair_05/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I opened the envelope and read the first line twice. After months of work, the road ahead suddenly looked bright and open.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2angry, Sample2, reference audio">
+<source src="audio/references/reference_04.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">You charged us twice and then dismissed the evidence in front of you; correct the bill before I escalate this complaint!</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2angry, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_05/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2angry, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_05/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2angry, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_05/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2angry, Sample2, UESTTS">
+<source src="audio/model_04/pair_05/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="happy2happy" aria-labelledby="title-happy2happy">
+<h3 id="title-happy2happy">Happy2happy</h3>
+<p class="pair-description">Reference Audio Emotion: happy -&gt; Target Text Emotion: happy</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">太好啦！我终于拿到录取通知书了，这段时间的努力全都值得，今晚一定要好好庆祝一下！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2happy, Sample1, reference audio">
+<source src="audio/references/reference_03.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">推开家门时，大家突然点亮蜡烛围了上来，我捧着蛋糕笑得停不下来，连许愿都忘了。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2happy, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_06/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2happy, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_06/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2happy, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_06/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2happy, Sample1, UESTTS">
+<source src="audio/model_04/pair_06/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I opened the envelope and read the first line twice. After months of work, the road ahead suddenly looked bright and open.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2happy, Sample2, reference audio">
+<source src="audio/references/reference_04.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">My grandfather recognized me at the station, threw both arms wide, and spent the whole ride home telling his favorite stories.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2happy, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_06/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2happy, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_06/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2happy, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_06/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2happy, Sample2, UESTTS">
+<source src="audio/model_04/pair_06/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="happy2neutral" aria-labelledby="title-happy2neutral">
+<h3 id="title-happy2neutral">Happy2neutral</h3>
+<p class="pair-description">Reference Audio Emotion: happy -&gt; Target Text Emotion: neutral</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">太好啦！我终于拿到录取通知书了，这段时间的努力全都值得，今晚一定要好好庆祝一下！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample1, reference audio">
+<source src="audio/references/reference_03.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">列车预计在十五分钟后到达三号站台，乘客需要提前准备车票，并按照现场标识有序候车。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_07/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_07/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_07/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample1, UESTTS">
+<source src="audio/model_04/pair_07/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I opened the envelope and read the first line twice. After months of work, the road ahead suddenly looked bright and open.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample2, reference audio">
+<source src="audio/references/reference_04.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">The archive stores each document by date, author, and category, allowing staff to retrieve records through the central index.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_07/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_07/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_07/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2neutral, Sample2, UESTTS">
+<source src="audio/model_04/pair_07/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="happy2sad" aria-labelledby="title-happy2sad">
+<h3 id="title-happy2sad">Happy2sad</h3>
+<p class="pair-description">Reference Audio Emotion: happy -&gt; Target Text Emotion: sad</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">太好啦！我终于拿到录取通知书了，这段时间的努力全都值得，今晚一定要好好庆祝一下！</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2sad, Sample1, reference audio">
+<source src="audio/references/reference_03.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">约好的座位始终空着，桌上的饭菜渐渐凉透，我看着窗外一盏盏熄灭的灯，独自等到深夜。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2sad, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_08/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2sad, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_08/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2sad, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_08/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2sad, Sample1, UESTTS">
+<source src="audio/model_04/pair_08/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">I opened the envelope and read the first line twice. After months of work, the road ahead suddenly looked bright and open.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="happy2sad, Sample2, reference audio">
+<source src="audio/references/reference_04.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">Her favorite song came on the radio during the drive, and I had to pull over when I reached for a hand no longer there.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="happy2sad, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_08/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="happy2sad, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_08/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="happy2sad, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_08/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="happy2sad, Sample2, UESTTS">
+<source src="audio/model_04/pair_08/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="neutral2angry" aria-labelledby="title-neutral2angry">
+<h3 id="title-neutral2angry">Neutral2angry</h3>
+<p class="pair-description">Reference Audio Emotion: neutral -&gt; Target Text Emotion: angry</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">不用着急，事情已经安排妥当了。我们按部就班地做，一步一步来，总会有结果的。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample1, reference audio">
+<source src="audio/references/reference_05.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">这份合同的关键条款被悄悄改了，会上却没人主动说明，你们究竟把基本诚信放在哪里！</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_09/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_09/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_09/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample1, UESTTS">
+<source src="audio/model_04/pair_09/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">The harbor barely moved as we finished our work. There was no need to rush; each task could wait its turn.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample2, reference audio">
+<source src="audio/references/reference_06.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">We waited outside for two hours, and now you are closing the doors without an explanation; this treatment is completely unacceptable!</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_09/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_09/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_09/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2angry, Sample2, UESTTS">
+<source src="audio/model_04/pair_09/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="neutral2happy" aria-labelledby="title-neutral2happy">
+<h3 id="title-neutral2happy">Neutral2happy</h3>
+<p class="pair-description">Reference Audio Emotion: neutral -&gt; Target Text Emotion: happy</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">不用着急，事情已经安排妥当了。我们按部就班地做，一步一步来，总会有结果的。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample1, reference audio">
+<source src="audio/references/reference_05.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">第一次听见孩子清楚地叫我，心头像被阳光照亮，我蹲下来抱住他，反复回应那声呼唤。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_10/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_10/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_10/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample1, UESTTS">
+<source src="audio/model_04/pair_10/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">The harbor barely moved as we finished our work. There was no need to rush; each task could wait its turn.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample2, reference audio">
+<source src="audio/references/reference_06.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">The children ran beneath the rainbow after the storm, splashing through puddles while their laughter filled the street.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_10/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_10/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_10/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2happy, Sample2, UESTTS">
+<source src="audio/model_04/pair_10/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="neutral2neutral" aria-labelledby="title-neutral2neutral">
+<h3 id="title-neutral2neutral">Neutral2neutral</h3>
+<p class="pair-description">Reference Audio Emotion: neutral -&gt; Target Text Emotion: neutral</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">不用着急，事情已经安排妥当了。我们按部就班地做，一步一步来，总会有结果的。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample1, reference audio">
+<source src="audio/references/reference_05.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">今天下午多云，城区气温维持在二十二度左右，夜间可能出现短时降雨，出行请携带雨具。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_11/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_11/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_11/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample1, UESTTS">
+<source src="audio/model_04/pair_11/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">The harbor barely moved as we finished our work. There was no need to rush; each task could wait its turn.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample2, reference audio">
+<source src="audio/references/reference_06.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">The updated manual describes the installation process, routine maintenance schedule, and steps for reporting technical issues.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_11/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_11/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_11/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2neutral, Sample2, UESTTS">
+<source src="audio/model_04/pair_11/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="neutral2sad" aria-labelledby="title-neutral2sad">
+<h3 id="title-neutral2sad">Neutral2sad</h3>
+<p class="pair-description">Reference Audio Emotion: neutral -&gt; Target Text Emotion: sad</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">不用着急，事情已经安排妥当了。我们按部就班地做，一步一步来，总会有结果的。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample1, reference audio">
+<source src="audio/references/reference_05.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">她把戒指轻轻放回桌上，只留下一句保重，门关上以后，屋里只剩钟表单调的滴答声。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_12/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_12/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_12/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample1, UESTTS">
+<source src="audio/model_04/pair_12/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">The harbor barely moved as we finished our work. There was no need to rush; each task could wait its turn.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample2, reference audio">
+<source src="audio/references/reference_06.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">His chair remains beside the window, exactly where he left it, but the afternoon light now falls across an empty cushion.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_12/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_12/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_12/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="neutral2sad, Sample2, UESTTS">
+<source src="audio/model_04/pair_12/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="sad2angry" aria-labelledby="title-sad2angry">
+<h3 id="title-sad2angry">Sad2angry</h3>
+<p class="pair-description">Reference Audio Emotion: sad -&gt; Target Text Emotion: angry</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">他走的那天，我一句话都没能说出口。从此以后，再也没有人会在门口等我回家了。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2angry, Sample1, reference audio">
+<source src="audio/references/reference_07.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">刚修好的设备又被违规操作弄坏，警告标识就贴在旁边，你们为什么连看都不肯看一眼！</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2angry, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_13/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2angry, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_13/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2angry, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_13/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2angry, Sample1, UESTTS">
+<source src="audio/model_04/pair_13/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">Since he left, the house has stayed quiet. His mug remains by the sink, and every room feels unfinished.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2angry, Sample2, reference audio">
+<source src="audio/references/reference_08.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">Stop blaming the rest of the team for your missed deadline; we completed our work while you refused to answer a single call!</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2angry, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_13/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2angry, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_13/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2angry, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_13/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2angry, Sample2, UESTTS">
+<source src="audio/model_04/pair_13/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="sad2happy" aria-labelledby="title-sad2happy">
+<h3 id="title-sad2happy">Sad2happy</h3>
+<p class="pair-description">Reference Audio Emotion: sad -&gt; Target Text Emotion: happy</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">他走的那天，我一句话都没能说出口。从此以后，再也没有人会在门口等我回家了。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2happy, Sample1, reference audio">
+<source src="audio/references/reference_07.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">奶奶看到我们偷偷赶回家过年，眼睛一下亮了起来，忙着端出热菜，嘴角始终没有放下。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2happy, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_14/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2happy, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_14/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2happy, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_14/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2happy, Sample1, UESTTS">
+<source src="audio/model_04/pair_14/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">Since he left, the house has stayed quiet. His mug remains by the sink, and every room feels unfinished.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2happy, Sample2, reference audio">
+<source src="audio/references/reference_08.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">She opened the door to find every old friend holding candles, and her surprised grin made the entire room burst into applause.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2happy, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_14/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2happy, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_14/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2happy, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_14/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2happy, Sample2, UESTTS">
+<source src="audio/model_04/pair_14/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="sad2neutral" aria-labelledby="title-sad2neutral">
+<h3 id="title-sad2neutral">Sad2neutral</h3>
+<p class="pair-description">Reference Audio Emotion: sad -&gt; Target Text Emotion: neutral</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">他走的那天，我一句话都没能说出口。从此以后，再也没有人会在门口等我回家了。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample1, reference audio">
+<source src="audio/references/reference_07.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">这份报告汇总了过去三个月的销售数据，并从地区、产品类型和客户规模三个维度进行了比较。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_15/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_15/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_15/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample1, UESTTS">
+<source src="audio/model_04/pair_15/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">Since he left, the house has stayed quiet. His mug remains by the sink, and every room feels unfinished.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample2, reference audio">
+<source src="audio/references/reference_08.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">The package left the regional warehouse this morning and is scheduled to arrive at the distribution center tomorrow afternoon.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_15/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_15/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_15/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2neutral, Sample2, UESTTS">
+<source src="audio/model_04/pair_15/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+<section class="emotion-pair" id="sad2sad" aria-labelledby="title-sad2sad">
+<h3 id="title-sad2sad">Sad2sad</h3>
+<p class="pair-description">Reference Audio Emotion: sad -&gt; Target Text Emotion: sad</p>
+<div class="speech-sample">
+<h4>Sample1</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="zh">他走的那天，我一句话都没能说出口。从此以后，再也没有人会在门口等我回家了。</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2sad, Sample1, reference audio">
+<source src="audio/references/reference_07.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="zh">收拾房间时又翻到那张旧合影，照片里的人依然笑着，可如今再也没有机会坐在一起了。</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2sad, Sample1, Cosyvoice3">
+<source src="audio/model_01/pair_16/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2sad, Sample1, Qwen3-TTS">
+<source src="audio/model_02/pair_16/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2sad, Sample1, IndexTTS2">
+<source src="audio/model_03/pair_16/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2sad, Sample1, UESTTS">
+<source src="audio/model_04/pair_16/sample_01.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+<div class="speech-sample">
+<h4>Sample2</h4>
+<div class="reference-sample">
+<p class="sample-label">Reference text</p>
+<p class="reference-text" lang="en">Since he left, the house has stayed quiet. His mug remains by the sink, and every room feels unfinished.</p>
+<p class="sample-label">Reference audio</p>
+<audio controls preload="none" aria-label="sad2sad, Sample2, reference audio">
+<source src="audio/references/reference_08.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<p class="sample-label">Target text</p>
+<p class="sample-text" lang="en">We packed the final box from our childhood home, then paused at the doorway while decades of memories echoed through empty rooms.</p>
+<div class="model-audios">
+<div class="model-audio">
+<p class="model-name">Cosyvoice3</p>
+<audio controls preload="none" aria-label="sad2sad, Sample2, Cosyvoice3">
+<source src="audio/model_01/pair_16/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">Qwen3-TTS</p>
+<audio controls preload="none" aria-label="sad2sad, Sample2, Qwen3-TTS">
+<source src="audio/model_02/pair_16/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">IndexTTS2</p>
+<audio controls preload="none" aria-label="sad2sad, Sample2, IndexTTS2">
+<source src="audio/model_03/pair_16/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+<div class="model-audio">
+<p class="model-name">UESTTS</p>
+<audio controls preload="none" aria-label="sad2sad, Sample2, UESTTS">
+<source src="audio/model_04/pair_16/sample_02.wav" type="audio/wav">
+Your browser does not support the audio element.</audio></div>
+</div></div>
+</section>
+</section>
+<!-- AUDIO DEMO END -->
+<div class="container pt-5 mt-5 shadow-lg p-5 mb-5 bg-white rounded">
+	<h2 style="text-align: center;">Disclaimer</h2>
+	<p>The content provided above is for academic purposes only and is intended to demonstrate technical capabilities. Some examples are sourced from the internet. If any content infringes on your rights, please contact us to request its removal.</p>
+</div>
+
+</article>
+</main>
+</div>
+
+</body>
+
+</html>
